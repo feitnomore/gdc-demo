@@ -1,0 +1,12 @@
+export GCS_BUCKET=alloydb-omni-operator
+export HELM_PATH=$(gcloud storage cat gs://$GCS_BUCKET/latest)
+export OPERATOR_VERSION="${HELM_PATH%%/*}"
+
+gcloud storage cp gs://$GCS_BUCKET/$HELM_PATH ./ --recursive
+
+helm install alloydbomni-operator alloydbomni-operator-${OPERATOR_VERSION}.tgz \
+--create-namespace \
+--namespace alloydb-omni-system \
+--atomic \
+--timeout 5m
+
